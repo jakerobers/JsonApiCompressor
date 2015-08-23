@@ -1,21 +1,24 @@
-var JsonApiCompressorBase = function() {
+var _ = require("underscore"),
+	q = require("q"),
+	JsonApiCompressor = function JsonApiCompressor(object, parent) {
+	if ( !_.isObject(object) ) {
+		return new Error("Object was not passed into JsonApiCompressor.")
+	}
+	this.object = object;
+	this.parent = parent;
 
-};
-
-JsonApiCompressorBase.prototype = {
-	attributes: function(attributes) {
-		if ( !attributes ) {
-			return new Error("attributes is not defined");
+	this.attributes = function() {
+		if ( !this.object.attributes ) {
+			return new Error("The object provided does not have attributes.");
+		} else if ( !_.isArray(this.object.attributes) ) {
+			return new Error("Attributes must be an array.")
 		}
-		if ( _.isObject(this.object) ) {
-			this.json.data = _.extend({type: this.object.type}, _.pick(this.object, ["id"]));
-			this.json.data.attributes = _.pick(this.object, attributes);
-		} else {
-			return new Error("Data given in constructor is not an object");
-		}
+		this.json.data = _.extend({type: this.object.type}, _.pick(this.object, ["id"]));
+		this.json.data.attributes = _.pick(this.object, this.object.attributes);
 		return this;
-	},
-	relation: function(relName, relObj) {
+	};
+
+	this.relationships = function(relName, relObj) {
 		if ( this.object[relName] && relObj ) {
 			if ( !this.json.data.relationships ) {
 				this.json.data.relationships = {};
@@ -30,15 +33,16 @@ JsonApiCompressorBase.prototype = {
 				console.error("JsonApiCompressor could not compress " + relName + ". Check format.");
 			}
 		}
-		return this;
-	},
-	done: function() {
-		return this.json;
-	}
-};
+		return new JsonApiCompressor(relObj, this);
+	};
 
-var JsonApiCompressor = function JsonApiCompressor(object) {
-	this.object = object;
+	this.done = function() {
+		if ( !this.parent ) {
+			return new Error("Already at root object.");
+		}
+		return this.parent;
+	}
+
 	this.json = {
 		data: {},
 		included: [],
@@ -46,5 +50,3 @@ var JsonApiCompressor = function JsonApiCompressor(object) {
 	};
 	return this;
 };
-JsonApiCompressor.prototype = Object.create(JsonApiCompressorBase.prototype);
-

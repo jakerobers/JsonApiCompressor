@@ -1,0 +1,36 @@
+{
+  "name": "jsonapicompressor",
+  "version": "1.0.0",
+  "description": "A simple tool that converts objects to jsonapi.",
+  "main": "jsonapi_compressor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakerobers/JsonApiCompressor.git"
+  },
+  "keywords": [
+    "JsonApi",
+    "Json",
+    "Converter"
+  ],
+  "author": "Jake Robers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jakerobers/JsonApiCompressor/issues"
+  },
+  "homepage": "https://github.com/jakerobers/JsonApiCompressor#readme",
+  "devDependencies": {
+    "del": "^1.2.1",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jasmine": "^2.0.1",
+    "jasmine": "^2.3.2",
+    "run-sequence": "^1.1.2"
+  },
+  "dependencies": {
+    "q": "^1.4.1",
+    "underscore": "^1.8.3"
+  }
+}

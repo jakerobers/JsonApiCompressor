@@ -1,12 +1,10 @@
 describe("attributes", function() {
 	it("should error if none are given", function() {
 		var result = new JsonApiCompressor(null);
-		console.log(result);
 	});
 
 	it("should error if it is not an object", function() {
 		var result = new JsonApiCompressor([]);
-		console.log(result);
 	});
 
 	it("should properly convert 0 levels deep not including all attributes", function() {
@@ -83,8 +81,10 @@ describe("relationships", function() {
 				"last-name": "Scott"
 			}
 		}).attributes(Business.attributes)
-			.relationship("employees").attributes(Person.attributes).done()
-		.json,
+			.relationship("employees")
+			.attributes(Person.attributes)
+			.done()
+			.json,
 
 		expected = {
 			"data": {
@@ -127,6 +127,7 @@ describe("relationships", function() {
 				}
 			}]
 		};
+		expect(result).toBe(expected);
 	});
 
 	it("should properly convert an object 2 levels deep", function() {

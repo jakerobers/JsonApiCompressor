@@ -1,7 +1,14 @@
 var _ = require("underscore"),
-	q = require("q");
+	q = require("q"),
+	JsonApiCompressor = null;
 
-var JsonApiCompressor = function JsonApiCompressor(object, parent) {
+JsonApiCompressorBase = (function() {
+	function JsonApiCompressorBase
+	JsonApiCompressor.prototype.attributes = 
+});
+
+
+ function JsonApiCompressor(object, parent) {
 	if ( !_.isObject(object) ) {
 		return new Error("Object was not passed into JsonApiCompressor.")
 	}

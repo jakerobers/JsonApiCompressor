@@ -1,3 +1,6 @@
+fs = require('fs')
+eval(fs.readFileSync('../.build/app/app.js','utf-8'))
+
 describe("attributes", function() {
 	it("should error if none are given", function() {
 		var result = new JsonApiCompressor(null);

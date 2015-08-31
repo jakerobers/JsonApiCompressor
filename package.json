@@ -22,10 +22,14 @@
   },
   "homepage": "https://github.com/jakerobers/JsonApiCompressor#readme",
   "devDependencies": {
+    "coffee-script": "^1.9.3",
     "del": "^1.2.1",
+    "fs": "0.0.2",
     "gulp": "^3.9.0",
+    "gulp-coffee": "^2.3.1",
     "gulp-concat": "^2.6.0",
     "gulp-jasmine": "^2.0.1",
+    "gutil": "^1.6.4",
     "jasmine": "^2.3.2",
     "run-sequence": "^1.1.2"
   },

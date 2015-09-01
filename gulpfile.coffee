@@ -6,12 +6,12 @@ require('./gulp_tasks/test.task.coffee')
 require('./gulp_tasks/vendor.task.coffee')
 
 gulp.task 'build', ->
-	return runSequence(
-		'clean',
-		'vendor',
-		'coffee',
-		'javascript'
-	)
+  return runSequence(
+    'clean',
+    'vendor',
+    'coffee',
+    'javascript'
+  )
 #END build
 
 gulp.task('default', ['build']);

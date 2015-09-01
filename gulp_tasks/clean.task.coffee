@@ -3,5 +3,5 @@ config = require('./config')
 del = require('del')
 
 gulp.task 'clean', ->
-	del(config.build_dir)
+  del(config.build_dir)
 #END clean

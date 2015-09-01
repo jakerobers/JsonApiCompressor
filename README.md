@@ -13,10 +13,10 @@ bower install --save underscore
 ##  Usage
 
 ```javascript
-	return new JsonApiCompressor(this)
-		.attributes(House.prototype.attributes)
-		.relation('owner', User)
-		.done();
+  return new JsonApiCompressor(this)
+    .attributes(House.prototype.attributes)
+    .relation('owner', User)
+    .done();
 ```
 
 Currently, the serialization only goes one level deep. Making the serialization recursive is a prospective feature.
@@ -29,11 +29,11 @@ Models _must_ contain a string with key `type`. For any attribute you want added
 
 ```javascript
 User: {
-	"attributes": ["username", "first-name", "last-name", "email", "password"],
-	"type": "user",
-	"username": "myCleverName",
-	"first-name": "Jake",
-	"email": "example@gmail.com",
+  "attributes": ["username", "first-name", "last-name", "email", "password"],
+  "type": "user",
+  "username": "myCleverName",
+  "first-name": "Jake",
+  "email": "example@gmail.com",
 }
 ```
 

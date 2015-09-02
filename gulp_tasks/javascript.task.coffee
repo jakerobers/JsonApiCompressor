@@ -5,9 +5,13 @@ concat = require('gulp-concat')
 
 paths =
   'coffee':
-    'input': ['assets/**/*.coffee']
+    'input': [
+      'assets/JsonApiCompressorBase.coffee'
+      'assets/JsonApiCompressor.coffee'
+    ]
     'output':
       'dir': "#{config.tmp_dir}/coffee"
+      'file': "JsonApiCompressor.coffee"
     #END output
   #END coffee
 
@@ -27,6 +31,7 @@ gulp.task 'coffee', ->
   {input, output} = paths.coffee
 
   gulp.src(input)
+  .pipe(concat(output.file))
   .pipe(coffee())
   .pipe(gulp.dest(output.dir))
 #END coffee

@@ -5,7 +5,6 @@ config         = require('./config')
 paths =
   input: [
     'node_modules/underscore/underscore-min.js'
-    'node_modules/q/q.js'
   ]
   output:
     file: 'vendor.js'

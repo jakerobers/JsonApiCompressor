@@ -1,7 +1,7 @@
 gulp = require('gulp')
 config = require('./config')
-del = require('del')
+rimraf = require('rimraf')
 
-gulp.task 'clean', ->
-  del(config.build_dir)
+gulp.task 'clean', (cb) ->
+  rimraf(config.build_dir, cb)
 #END clean

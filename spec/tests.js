@@ -1,13 +1,13 @@
-fs = require('fs')
-eval(fs.readFileSync('../.build/app/app.js','utf-8'))
 
 describe("attributes", function() {
   it("should error if none are given", function() {
     var result = new JsonApiCompressor(null);
+    chai.assert.equal(result, null);
   });
 
   it("should error if it is not an object", function() {
     var result = new JsonApiCompressor([]);
+    chai.assert.equal(result, null);
   });
 
   it("should properly convert 0 levels deep not including all attributes", function() {
@@ -130,7 +130,7 @@ describe("relationships", function() {
         }
       }]
     };
-    expect(result).toBe(expected);
+    chai.assert.equal(result, expected);
   });
 
   it("should properly convert an object 2 levels deep", function() {

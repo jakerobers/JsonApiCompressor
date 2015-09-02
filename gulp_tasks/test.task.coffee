@@ -1,10 +1,10 @@
 gulp = require('gulp')
-jasmine = require('gulp-jasmine')
+mocha = require('gulp-mocha')
 
 paths =
   input: ['spec/**/*.js']
 
-gulp.task 'test', ->
+gulp.task 'test:run', ->
   gulp.src(paths.input)
-  .pipe(jasmine())
+  .pipe(mocha())
 #END test

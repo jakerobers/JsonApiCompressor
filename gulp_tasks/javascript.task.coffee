@@ -14,7 +14,7 @@ paths =
   'js':
     'input': [
       "#{config.tmp_dir}/vendor/**/*.js"
-      "#{config.tmp_dir}/coffee/**/*.js"
+      "#{config.tmp_dir}/coffee/JsonApiCompressor.js"
     ]
     'output':
       'file': 'app.js'
@@ -32,13 +32,16 @@ gulp.task 'coffee', ->
 #END coffee
 
 
-gulp.task 'javascript', ->
+gulp.task 'javascript', ['coffee'], ->
   {input, output} = paths.js
 
   gulp.src(input)
   .pipe(concat(output.file))
   .pipe(gulp.dest(output.dir))
 #END javascript
+
+gulp.task 'watch:javascript', ->
+  gulp.watch(paths.coffee.input, ['javascript'])
 
 
 

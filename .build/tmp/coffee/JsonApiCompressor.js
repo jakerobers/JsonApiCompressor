@@ -11,48 +11,69 @@
     JsonApiCompressorBase.prototype.output = null;
 
     function JsonApiCompressorBase(object, parent) {
-      if (!_.isObject(object)) {
-        return new Error("Object was not passed into JsonApiCompressor.");
+      if (!(_.isObject(object) || _.isArray(object))) {
+        throw new Error("Object was not passed into JsonApiCompressor.");
       }
-      if (!(object.type || _.isString(object.type))) {
-        return new Error("The type for an object must be defined as a string.");
+      if (!((object.type || _.isString(object.type)) || (object[0].type && _.isString(object[0].type)))) {
+        throw new Error("The type for an object must be defined as a string.");
       }
-      if (!object.id) {
-        return new Error("The id for an object is undefined.");
+      if (!(object.id || object[0].id)) {
+        throw new Error("The id for an object is undefined.");
       }
       this.object = object;
       this.parent = parent;
       this.output = {
         data: {},
-        included: {},
+        included: [],
         links: {}
       };
     }
 
     JsonApiCompressorBase.prototype.attributes = function(attributes) {
+      var data, i, len, node, ref;
       if (!attributes) {
-        return new Error("The attributes for an object is undefined.");
+        throw new Error("The attributes for an object is undefined.");
       } else if (!_.isArray(attributes)) {
-        return new Error("The attributes for an object is undefined.");
+        throw new Error("The attributes for an object must be a list.");
       }
-      this.output.data = {
-        "id": this.object.id,
-        "type": this.object.type
-      };
-      this.output.data.attributes = _.pick(this.object, attributes);
+      if (_.isObject(this.object) && !_.isArray(this.object) && !_.isFunction(this.object)) {
+        this.output.data = {
+          "id": this.object.id,
+          "type": this.object.type
+        };
+        this.output.data.attributes = _.pick(this.object, attributes);
+      } else if (_.isArray(this.object)) {
+        this.output.data = [];
+        ref = this.object;
+        for (i = 0, len = ref.length; i < len; i++) {
+          node = ref[i];
+          data = {
+            "id": node.id,
+            "type": node.type
+          };
+          data.attributes = _.pick(node, attributes);
+          this.output.data.push(data);
+        }
+      } else {
+        throw new Error("The given object must be an object or array.");
+      }
       return this;
     };
 
     JsonApiCompressorBase.prototype.relationship = function(relName) {
       var relObj, relToBeAdded;
       if (!relName) {
-        return new Error("relationship must be given a parameter.");
+        throw new Error("relationship must be given a parameter.");
       }
-      relObj = this.object.relName;
+      relObj = this.object[relName];
       if (!relObj) {
-        return new Error("Relationship object is not defined.");
-      } else if (!relObj.type) {
-        return new Error("Relationship object type is not defined.");
+        throw new Error("Relationship object is not defined.");
+      }
+      if (!_.isObject(relObj) || (_.isArray(relObj) && _.isEmpty(relObj))) {
+        throw new Error("Relationship object must be an object, or an array with at least one index.");
+      }
+      if (!(relObj.type || (_.isArray(relObj) && relObj[0].type))) {
+        throw new Error("Relationship object type is not defined.");
       }
 
       /* Set the defaults */
@@ -73,18 +94,36 @@
       }
       if (_.isEmpty(this.output.data.relationships[relName].data)) {
         this.output.data.relationships[relName].data = relToBeAdded;
-      } else if (_.isObject(this.output.data.relationships[relName].data)) {
+      } else if (_.isObject(this.output.data.relationships[relName].data) && !_.isArray(this.output.data.relationships[relName].data) && !_.isFunction(this.output.data.relationships[relName].data)) {
         this.output.data.relationships[relName].data = [this.output.data.relationships[relName].data];
         this.output.data.relationships[relName].data.push(relToBeAdded);
       } else if (_.isArray(this.output.data.relationships[relName].data)) {
         this.output.data.relationships[relName].data.push(relToBeAdded);
       } else {
-        return new Error("object." + relName + ".data must be an array or object.");
+        throw new Error("object." + relName + ".data must be an array or object.");
       }
-      return new JsonApiConpressorBase(this.object[relName], this);
+      return new JsonApiCompressorBase(this.object[relName], this);
     };
 
-    JsonApiCompressorBase.prototype.done = function() {};
+    JsonApiCompressorBase.prototype.done = function() {
+      var i, len, node, ref;
+      if (!_.isObject(this.output.data) || _.isFunction(this.output.data)) {
+        throw new Error("Output data did not convert properly: " + this.output.data);
+      }
+
+      /* Load into included */
+      if (_.isArray(this.output.data)) {
+        ref = this.parent.output.data;
+        for (i = 0, len = ref.length; i < len; i++) {
+          node = ref[i];
+          this.parent.output.included.push(node);
+        }
+      } else {
+        this.parent.output.included.push(this.output.data);
+      }
+      console.log(this);
+      return this.parent;
+    };
 
     return JsonApiCompressorBase;
 
@@ -94,7 +133,7 @@
     extend(JsonApiCompressor, superClass);
 
     function JsonApiCompressor(object) {
-      console.log(object);
+      JsonApiCompressor.__super__.constructor.call(this, object);
     }
 
     return JsonApiCompressor;

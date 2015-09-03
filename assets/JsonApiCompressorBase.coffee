@@ -4,36 +4,48 @@ class JsonApiCompressorBase
   output: null
 
   constructor: (object, parent)->
-    unless _.isObject(object)
-      return new Error("Object was not passed into JsonApiCompressor.")
-    unless object.type || _.isString(object.type)
-      return new Error("The type for an object must be defined as a string.")
-    unless object.id
-      return new Error("The id for an object is undefined.")
+    unless _.isObject(object) || _.isArray(object)
+      throw new Error("Object was not passed into JsonApiCompressor.")
+    unless (object.type || _.isString(object.type)) || (object[0].type && _.isString(object[0].type))
+      throw new Error("The type for an object must be defined as a string.")
+    unless object.id || object[0].id
+      throw new Error("The id for an object is undefined.")
     #END unless
 
     @object = object
     @parent = parent
     @output =
       data: {}
-      included: {}
+      included: []
       links: {}
     #END output
   #END constructor
 
   attributes: (attributes)->
     unless attributes
-      return new Error("The attributes for an object is undefined.")
+      throw new Error("The attributes for an object is undefined.")
     else unless _.isArray(attributes)
-      return new Error("The attributes for an object is undefined.")
+      throw new Error("The attributes for an object must be a list.")
     #END unless
 
-    @output.data =
-      "id": @object.id
-      "type": @object.type
-    #END output.data
-
-    @output.data.attributes = _.pick(@object, attributes)
+    if _.isObject(@object) && !_.isArray(@object) && !_.isFunction(@object)
+      @output.data =
+        "id": @object.id
+        "type": @object.type
+      #END output.data
+      @output.data.attributes = _.pick(@object, attributes)
+    else if _.isArray(@object)
+      @output.data = []
+      for node in @object
+        data =
+          "id": node.id
+          "type": node.type
+        data.attributes = _.pick(node, attributes)
+        @output.data.push(data)
+      #END for
+    else
+      throw new Error("The given object must be an object or array.")
+    #END if
 
     return @
   #END attributes
@@ -41,14 +53,21 @@ class JsonApiCompressorBase
 
   relationship: (relName)->
     unless relName
-      return new Error("relationship must be given a parameter.")
+      throw new Error("relationship must be given a parameter.")
     #END unless
 
-    relObj = @object.relName
+    relObj = @object[relName]
+
     unless relObj
-      return new Error("Relationship object is not defined.")
-    else unless relObj.type
-      return new Error("Relationship object type is not defined.")
+      throw new Error("Relationship object is not defined.")
+    #END unless
+
+    if !_.isObject(relObj) || (_.isArray(relObj) && _.isEmpty(relObj))
+      throw new Error("Relationship object must be an object, or an array with at least one index.")
+    #END if
+
+    unless relObj.type || (_.isArray(relObj) && relObj[0].type)
+      throw new Error("Relationship object type is not defined.")
     #END unless
 
     ### Set the defaults ###
@@ -61,18 +80,35 @@ class JsonApiCompressorBase
 
     if _.isEmpty(@output.data.relationships[relName].data)
       @output.data.relationships[relName].data = relToBeAdded
-    else if _.isObject(@output.data.relationships[relName].data)
+    else if _.isObject(@output.data.relationships[relName].data) && !_.isArray(@output.data.relationships[relName].data) && !_.isFunction(@output.data.relationships[relName].data)
       @output.data.relationships[relName].data = [@output.data.relationships[relName].data]
       @output.data.relationships[relName].data.push(relToBeAdded)
     else if _.isArray(@output.data.relationships[relName].data)
       @output.data.relationships[relName].data.push(relToBeAdded)
     else
-      return new Error("object." + relName + ".data must be an array or object.")
+      throw new Error("object." + relName + ".data must be an array or object.")
     #END if
-    return new JsonApiConpressorBase(@object[relName], @)
+
+    return new JsonApiCompressorBase(@object[relName], @)
   #END relationship
 
   done: ()->
+    if !_.isObject(@output.data) || _.isFunction(@output.data)
+      throw new Error("Output data did not convert properly: " + @output.data)
+    #END if
+
+    ### Load into included ###
+    if _.isArray(@output.data)
+      for node in @parent.output.data
+        @parent.output.included.push node
+      #END for
+    else
+      @parent.output.included.push @output.data
+    #END if
+
+    console.log @
+
+    return @parent
   #END done
 
 #END JsonApiConpressorBase

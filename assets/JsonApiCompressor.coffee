@@ -1,5 +1,5 @@
 class @JsonApiCompressor extends JsonApiCompressorBase
   constructor: (object) ->
-    console.log(object)
+    super(object)
   #END constructor
 #END JsonApiCompressor

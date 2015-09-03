@@ -1,0 +1,21 @@
+{
+  "name": "JsonApiCompressor",
+  "version": "0.0.0",
+  "homepage": "https://github.com/jakerobers/JsonApiCompressor",
+  "authors": [
+    "Jake Robers <jakerobers@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chai": "~3.2.0",
+    "mocha": "~2.3.0",
+    "underscore": "~1.8.3"
+  }
+}

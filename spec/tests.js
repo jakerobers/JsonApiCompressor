@@ -1,26 +1,35 @@
 
 describe("attributes", function() {
   it("should error if none are given", function() {
-    var result = new JsonApiCompressor(null);
-    chai.assert.equal(result, null);
+    chai.assert.throw(function() {
+      new JsonApiCompressor.bind(null);
+    }, Error);
   });
 
   it("should error if it is not an object", function() {
-    var result = new JsonApiCompressor([]);
-    chai.assert.equal(result, null);
+    chai.assert.throw(function() {
+      new JsonApiCompressor.bind([]);
+    }, Error);
+
   });
 
   it("should properly convert 0 levels deep not including all attributes", function() {
+    var Person = {
+      attributes: ["username", "email", "password"]
+    }
     var result = new JsonApiCompressor({
       "id":1,
       "type": "user",
       "attributes": ["username", "email", "password"],
       "email": "example@gmail.com",
       "username":" example"
-    }).attributes().json;
+    }).attributes(Person.attributes).json;
   });
 
   it("should properly convert 0 levels deep including all attributes", function() {
+    var Person = {
+      attributes: ["username", "email", "password"]
+    }
     var result = new JsonApiCompressor({
       "id":1,
       "type": "user",
@@ -28,7 +37,7 @@ describe("attributes", function() {
       "email": "example@gmail.com",
       "username":" example",
       "password": "abc123"
-    }).attributes().json;
+    }).attributes(Person.attributes).json;
   });
 
   it("should properly convert 1 level deep", function() {

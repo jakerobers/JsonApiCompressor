@@ -33,8 +33,5 @@
     "jasmine": "^2.3.2",
     "rimraf": "^2.4.3",
     "run-sequence": "^1.1.2"
-  },
-  "dependencies": {
-    "underscore": "^1.8.3"
   }
 }

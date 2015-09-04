@@ -23,7 +23,7 @@ paths =
       "#{config.tmp_dir}/coffee/JsonApiCompressor.js"
     ]
     'output':
-      'file': 'app.js'
+      'file': 'jsonapicompressor.js'
       'dir': "#{config.app_dir}/"
     #END output
   #END js
@@ -46,7 +46,7 @@ gulp.task 'javascript', ['coffee'], ->
   .pipe(sourcemaps.init())
     .pipe(concat(output.file))
     .pipe(uglify())
-  .pipe(sourcemaps.write("./maps"))
+  .pipe(sourcemaps.write("./"))
   .pipe(gulp.dest(output.dir))
 #END javascript
 

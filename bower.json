@@ -1,6 +1,7 @@
 {
   "name": "JsonApiCompressor",
-  "version": "0.0.0",
+  "description": "A lightweight javascript tool to convert models into JsonApi format.",
+  "version": "0.0.1",
   "homepage": "https://github.com/jakerobers/JsonApiCompressor",
   "authors": [
     "Jake Robers <jakerobers@gmail.com>"
@@ -13,9 +14,17 @@
     "test",
     "tests"
   ],
+  "keywords": [
+    "jsonapi",
+    "serializer",
+    "compressor"
+  ],
+  "license": "MIT",
   "dependencies": {
-    "chai": "~3.2.0",
-    "mocha": "~2.3.0",
     "underscore": "~1.8.3"
+  },
+  "devDependencies": {
+    "mocha": "~2.3.0",
+    "chai": "~3.2.0"
   }
 }

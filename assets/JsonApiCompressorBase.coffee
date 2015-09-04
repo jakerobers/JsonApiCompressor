@@ -75,19 +75,24 @@ class JsonApiCompressorBase
     @output.data.relationships[relName] = {} unless @output.data.relationships[relName]
     @output.data.relationships[relName].data = {} unless @output.data.relationships[relName].data
 
-    relToBeAdded = type: relObj.type
-    relToBeAdded.id = relObj.id if relObj.id?
+    unless _.isArray(relObj)
+      relObj = [relObj]
+    #END unless
 
-    if _.isEmpty(@output.data.relationships[relName].data)
-      @output.data.relationships[relName].data = relToBeAdded
-    else if _.isObject(@output.data.relationships[relName].data) && !_.isArray(@output.data.relationships[relName].data) && !_.isFunction(@output.data.relationships[relName].data)
-      @output.data.relationships[relName].data = [@output.data.relationships[relName].data]
-      @output.data.relationships[relName].data.push(relToBeAdded)
-    else if _.isArray(@output.data.relationships[relName].data)
-      @output.data.relationships[relName].data.push(relToBeAdded)
-    else
-      throw new Error("object." + relName + ".data must be an array or object.")
-    #END if
+    for relNode in relObj
+      relToBeAdded = type: relNode.type
+      relToBeAdded.id = relNode.id if relNode.id?
+
+      if _.isEmpty(@output.data.relationships[relName].data)
+        @output.data.relationships[relName].data = relToBeAdded
+      else if _.isObject(@output.data.relationships[relName].data) && !_.isArray(@output.data.relationships[relName].data) && !_.isFunction(@output.data.relationships[relName].data)
+        @output.data.relationships[relName].data = [@output.data.relationships[relName].data]
+        @output.data.relationships[relName].data.push(relToBeAdded)
+      else if _.isArray(@output.data.relationships[relName].data)
+        @output.data.relationships[relName].data.push(relToBeAdded)
+      else
+        throw new Error("object." + relName + ".data must be an array or object.")
+      #END if
 
     return new JsonApiCompressorBase(@object[relName], @)
   #END relationship
@@ -99,14 +104,12 @@ class JsonApiCompressorBase
 
     ### Load into included ###
     if _.isArray(@output.data)
-      for node in @parent.output.data
+      for node in @output.data
         @parent.output.included.push node
       #END for
     else
       @parent.output.included.push @output.data
     #END if
-
-    console.log @
 
     return @parent
   #END done

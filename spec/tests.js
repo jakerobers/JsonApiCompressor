@@ -64,7 +64,7 @@ describe("relationships", function() {
     Business = {
       attributes: ["address", "city", "state", "name"]
     },
-    result = new JsonApiCompressor({
+    result = JSON.stringify(new JsonApiCompressor({
       "id": "1",
       "type": "business",
       "attributes": ["address", "city", "state", "name"],
@@ -93,52 +93,11 @@ describe("relationships", function() {
         "last-name": "Scott"
       }
     }).attributes(Business.attributes)
-      .relationship("employees")
-      .attributes(Person.attributes)
-      .done()
-      .json,
+      .relationship("employees").attributes(Person.attributes).done()
+      .relationship("manager").attributes(Person.attributes).done()
+      .output),
 
-    expected = {
-      "data": {
-        "id": "1",
-        "type": "business",
-        "attributes": {
-          "name": "Dunder Mifflin",
-          "address": "1725 Slough Avenue",
-          "city": "Scranton",
-          "state": "PA"
-        },
-        "relationships": {
-          "employee": [
-            {"id": "1","type": "person"},
-            {"id": "2", "type":"person"}
-          ],
-          "manager": {"id": "3", "type": "person"}
-        }
-      },
-      "included": [{
-        "id": "1",
-        "type": "person",
-        "attributes": {
-          "first-name": "Dwight",
-          "last-name": "Schrute"
-        }
-      }, {
-        "id": "2",
-        "type": "person",
-        "attributes": {
-          "first-name": "Phyllis",
-          "last-name": "Smith"
-        }
-      }, {
-        "id": "3",
-        "type": "person",
-        "attributes": {
-          "first-name": "Michael",
-          "last-name": "Scott"
-        }
-      }]
-    };
+    expected = '{"data":{"id":"1","type":"business","attributes":{"address":"1725 Slough Avenue","city":"Scranton","state":"PA","name":"Dunder Mifflin"},"relationships":{"employees":{"data":[{"type":"person","id":"1"},{"type":"person","id":"2"}]},"manager":{"data":{"type":"person","id":"3"}}}},"included":[{"id":"1","type":"person","attributes":{"first-name":"Dwight","last-name":"Schrute"}},{"id":"2","type":"person","attributes":{"first-name":"Phyllis","last-name":"Smith"}},{"id":"3","type":"person","attributes":{"first-name":"Michael","last-name":"Scott"}}],"links":{}}';
     chai.assert.equal(result, expected);
   });
 

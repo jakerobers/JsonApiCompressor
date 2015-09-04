@@ -2,6 +2,8 @@ gulp = require('gulp')
 config = require('./config')
 coffee = require('gulp-coffee')
 concat = require('gulp-concat')
+uglify = require('gulp-uglify')
+sourcemaps = require('gulp-sourcemaps')
 
 paths =
   'coffee':
@@ -41,7 +43,10 @@ gulp.task 'javascript', ['coffee'], ->
   {input, output} = paths.js
 
   gulp.src(input)
-  .pipe(concat(output.file))
+  .pipe(sourcemaps.init())
+    .pipe(concat(output.file))
+    .pipe(uglify())
+  .pipe(sourcemaps.write("./maps"))
   .pipe(gulp.dest(output.dir))
 #END javascript
 

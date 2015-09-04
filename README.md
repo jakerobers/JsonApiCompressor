@@ -1,6 +1,6 @@
 # JsonApi Compressor
 
-<img align="right" height="200" src="http://i.imgur.com/06HNrJK.png">
+<img align="right" height="200" src="http://i.imgur.com/wgvN7LN.png">
 
 JsonApi Compressor is a lightweight javascript tool to convert models into JsonApi format. This is intended to only be used on the client side for basic crud operations.
 <br />

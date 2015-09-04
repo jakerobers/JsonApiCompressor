@@ -4,6 +4,7 @@ class JsonApiCompressorBase
   output: null
 
   constructor: (object, parent)->
+
     unless _.isObject(object) || _.isArray(object)
       throw new Error("Object was not passed into JsonApiCompressor.")
     unless (object.type || _.isString(object.type)) || (object[0].type && _.isString(object[0].type))

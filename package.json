@@ -1,6 +1,6 @@
 {
   "name": "jsonapicompressor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple tool that converts objects to jsonapi.",
   "main": "jsonapi_compressor.js",
   "scripts": {
